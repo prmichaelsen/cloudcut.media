@@ -189,11 +189,122 @@ milestones:
         started: null
         actual_hours: null
 
+  - id: 7
+    title: Project Persistence & Auth
+    status: not_started
+    file: agent/milestones/milestone-7-project-persistence-auth.md
+    estimated_weeks: 2
+    tasks_total: 4
+    tasks_completed: 0
+    tasks:
+      - id: 19
+        title: Authentication System
+        status: not_started
+        file: agent/tasks/milestone-7-project-persistence-auth/task-19-authentication-system.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+      - id: 20
+        title: Project Save/Load
+        status: not_started
+        file: agent/tasks/milestone-7-project-persistence-auth/task-20-project-save-load.md
+        estimated_hours: 6
+        started: null
+        actual_hours: null
+      - id: 21
+        title: Project Listing UI
+        status: not_started
+        file: agent/tasks/milestone-7-project-persistence-auth/task-21-project-listing-ui.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+      - id: 22
+        title: Auto-save
+        status: not_started
+        file: agent/tasks/milestone-7-project-persistence-auth/task-22-auto-save.md
+        estimated_hours: 4
+        started: null
+        actual_hours: null
+
+  - id: 8
+    title: AI Features
+    status: not_started
+    file: agent/milestones/milestone-8-ai-features.md
+    estimated_weeks: 2
+    tasks_total: 3
+    tasks_completed: 0
+    tasks:
+      - id: 23
+        title: Auto-captions
+        status: not_started
+        file: agent/tasks/milestone-8-ai-features/task-23-auto-captions.md
+        estimated_hours: 6
+        started: null
+        actual_hours: null
+      - id: 24
+        title: Scene Detection
+        status: not_started
+        file: agent/tasks/milestone-8-ai-features/task-24-scene-detection.md
+        estimated_hours: 6
+        started: null
+        actual_hours: null
+      - id: 25
+        title: Caption Editor
+        status: not_started
+        file: agent/tasks/milestone-8-ai-features/task-25-caption-editor.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+
+  - id: 9
+    title: Production Ready
+    status: not_started
+    file: agent/milestones/milestone-9-production-ready.md
+    estimated_weeks: 3
+    tasks_total: 5
+    tasks_completed: 0
+    tasks:
+      - id: 26
+        title: Offline Support
+        status: not_started
+        file: agent/tasks/milestone-9-production-ready/task-26-offline-support.md
+        estimated_hours: 6
+        started: null
+        actual_hours: null
+      - id: 27
+        title: Error Handling
+        status: not_started
+        file: agent/tasks/milestone-9-production-ready/task-27-error-handling.md
+        estimated_hours: 4
+        started: null
+        actual_hours: null
+      - id: 28
+        title: Analytics
+        status: not_started
+        file: agent/tasks/milestone-9-production-ready/task-28-analytics.md
+        estimated_hours: 3
+        started: null
+        actual_hours: null
+      - id: 29
+        title: CI/CD Pipeline
+        status: not_started
+        file: agent/tasks/milestone-9-production-ready/task-29-cicd-pipeline.md
+        estimated_hours: 6
+        started: null
+        actual_hours: null
+      - id: 30
+        title: Performance Optimization
+        status: not_started
+        file: agent/tasks/milestone-9-production-ready/task-30-performance-optimization.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+
 documentation:
   design_documents: 2
-  milestone_documents: 6
+  milestone_documents: 9
   pattern_documents: 0
-  task_documents: 18
+  task_documents: 30
 
 progress:
   planning: 100
@@ -204,15 +315,20 @@ recent_work:
   - date: 2026-03-17
     items:
       - Created requirements document (agent/design/requirements.md)
-      - Planned 6 milestones with 18 tasks covering full MVP
+      - Planned 9 milestones with 30 tasks covering MVP through production release
       - Installed acp-tanstack-cloudflare package (48 patterns, 2 commands)
       - Installed core-sdk package (31 patterns)
       - Created plugin architecture design (agent/design/local.plugin-architecture.md)
       - Updated requirements to clarify iOS Safari/Capacitor as primary targets
       - Updated requirements to note HTML5 video as baseline (ffmpeg.wasm fallback for iOS)
-      - Added architectural considerations to M1, M5, M6 about extension points
+      - Added architectural considerations to M1, M5, M6, M7, M8 about extension points
+      - Created M7 milestone (Project Persistence & Auth) with 4 tasks
+      - Created M8 milestone (AI Features) with 3 tasks
+      - Created M9 milestone (Production Ready) with 5 tasks
+      - Fixed template variables in src/ components
 
 next_steps:
+  - Complete planning phase: commit and push M7-M9 artifacts
   - Start M1 Task 1 - TanStack Start project setup
   - Run @acp-proceed to begin implementation
 
