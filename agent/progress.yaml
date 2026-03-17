@@ -6,27 +6,210 @@ project:
   description: |
     WebAssembly-powered browser-based video editor with cloud rendering
 
-milestones: []
+current_milestone: 1
 
-tasks: {}
+milestones:
+  - id: 1
+    title: Project Foundation & Scaffolding
+    status: not_started
+    file: agent/milestones/milestone-1-project-foundation.md
+    estimated_weeks: 1
+    tasks_total: 3
+    tasks_completed: 0
+    tasks:
+      - id: 1
+        title: TanStack Start Setup
+        status: not_started
+        file: agent/tasks/milestone-1-project-foundation/task-1-tanstack-start-setup.md
+        estimated_hours: 3
+        started: null
+        actual_hours: null
+      - id: 2
+        title: WASM Integration
+        status: not_started
+        file: agent/tasks/milestone-1-project-foundation/task-2-wasm-integration.md
+        estimated_hours: 4
+        started: null
+        actual_hours: null
+      - id: 3
+        title: GCP Project Setup
+        status: not_started
+        file: agent/tasks/milestone-1-project-foundation/task-3-gcp-project-setup.md
+        estimated_hours: 3
+        started: null
+        actual_hours: null
+
+  - id: 2
+    title: Media Import & Storage Pipeline
+    status: not_started
+    file: agent/milestones/milestone-2-media-import-storage.md
+    estimated_weeks: 2
+    tasks_total: 3
+    tasks_completed: 0
+    tasks:
+      - id: 4
+        title: File Upload UI
+        status: not_started
+        file: agent/tasks/milestone-2-media-import-storage/task-4-file-upload-ui.md
+        estimated_hours: 4
+        started: null
+        actual_hours: null
+      - id: 5
+        title: GCS Upload Pipeline
+        status: not_started
+        file: agent/tasks/milestone-2-media-import-storage/task-5-gcs-upload-pipeline.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+      - id: 6
+        title: Proxy Generation
+        status: not_started
+        file: agent/tasks/milestone-2-media-import-storage/task-6-proxy-generation.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+
+  - id: 3
+    title: Timeline Editor
+    status: not_started
+    file: agent/milestones/milestone-3-timeline-editor.md
+    estimated_weeks: 2
+    tasks_total: 3
+    tasks_completed: 0
+    tasks:
+      - id: 7
+        title: EDL Data Model
+        status: not_started
+        file: agent/tasks/milestone-3-timeline-editor/task-7-edl-data-model.md
+        estimated_hours: 3
+        started: null
+        actual_hours: null
+      - id: 8
+        title: Timeline UI
+        status: not_started
+        file: agent/tasks/milestone-3-timeline-editor/task-8-timeline-ui.md
+        estimated_hours: 6
+        started: null
+        actual_hours: null
+      - id: 9
+        title: Clip Operations
+        status: not_started
+        file: agent/tasks/milestone-3-timeline-editor/task-9-clip-operations.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+
+  - id: 4
+    title: Video Preview & Playback
+    status: not_started
+    file: agent/milestones/milestone-4-video-preview-playback.md
+    estimated_weeks: 2
+    tasks_total: 3
+    tasks_completed: 0
+    tasks:
+      - id: 10
+        title: Frame Decoder
+        status: not_started
+        file: agent/tasks/milestone-4-video-preview-playback/task-10-frame-decoder.md
+        estimated_hours: 6
+        started: null
+        actual_hours: null
+      - id: 11
+        title: Preview Player
+        status: not_started
+        file: agent/tasks/milestone-4-video-preview-playback/task-11-preview-player.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+      - id: 12
+        title: Audio Waveforms
+        status: not_started
+        file: agent/tasks/milestone-4-video-preview-playback/task-12-audio-waveforms.md
+        estimated_hours: 4
+        started: null
+        actual_hours: null
+
+  - id: 5
+    title: Client-Side Effects
+    status: not_started
+    file: agent/milestones/milestone-5-client-side-effects.md
+    estimated_weeks: 2
+    tasks_total: 3
+    tasks_completed: 0
+    tasks:
+      - id: 13
+        title: Text Overlays
+        status: not_started
+        file: agent/tasks/milestone-5-client-side-effects/task-13-text-overlays.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+      - id: 14
+        title: Color Adjustments
+        status: not_started
+        file: agent/tasks/milestone-5-client-side-effects/task-14-color-adjustments.md
+        estimated_hours: 4
+        started: null
+        actual_hours: null
+      - id: 15
+        title: Transitions
+        status: not_started
+        file: agent/tasks/milestone-5-client-side-effects/task-15-transitions.md
+        estimated_hours: 4
+        started: null
+        actual_hours: null
+
+  - id: 6
+    title: Backend Rendering & WebSocket Connection
+    status: not_started
+    file: agent/milestones/milestone-6-backend-rendering.md
+    estimated_weeks: 2
+    tasks_total: 3
+    tasks_completed: 0
+    tasks:
+      - id: 16
+        title: WebSocket Server
+        status: not_started
+        file: agent/tasks/milestone-6-backend-rendering/task-16-websocket-server.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
+      - id: 17
+        title: Render Engine
+        status: not_started
+        file: agent/tasks/milestone-6-backend-rendering/task-17-render-engine.md
+        estimated_hours: 6
+        started: null
+        actual_hours: null
+      - id: 18
+        title: Export Flow
+        status: not_started
+        file: agent/tasks/milestone-6-backend-rendering/task-18-export-flow.md
+        estimated_hours: 5
+        started: null
+        actual_hours: null
 
 documentation:
-  design_documents: 0
-  milestone_documents: 0
+  design_documents: 1
+  milestone_documents: 6
   pattern_documents: 0
-  task_documents: 0
+  task_documents: 18
 
 progress:
-  planning: 0
+  planning: 100
   implementation: 0
-  overall: 0
+  overall: 10
 
-recent_work: []
+recent_work:
+  - date: 2026-03-17
+    items:
+      - Created requirements document (agent/design/requirements.md)
+      - Planned 6 milestones with 18 tasks covering full MVP
+      - Installed acp-tanstack-cloudflare package (patterns)
 
 next_steps:
-  - Define project requirements in agent/design/requirements.md
-  - Plan milestones and tasks with @acp.plan
-  - Start development with @acp.proceed
+  - Start M1 Task 1 - TanStack Start project setup
+  - Run @acp-proceed to begin implementation
 
 notes: []
 
