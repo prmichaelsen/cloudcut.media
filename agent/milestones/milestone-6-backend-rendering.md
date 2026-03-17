@@ -22,6 +22,15 @@ Client-side preview is low-resolution by design. For final output, the client se
 - The exported file downloads successfully via a time-limited signed GCS URL
 - Render errors are reported back to the client with actionable messages
 
+## Architectural Considerations
+
+**Plugin Extension Points**: Design the render pipeline to support future plugin-based export formats:
+- **Export Format Registry**: Built-in MP4 export should register via the same interface third-party formats (ProRes, DNxHD, etc.) will use later
+- **Render Pipeline Stages**: Separate EDL parsing, asset resolution, effect application, and encoding into distinct stages so plugins can hook into specific steps
+- **Progress Events**: Standardized progress event format that both built-in and plugin exporters can emit
+
+See `agent/design/local.plugin-architecture.md` for extension point patterns.
+
 ## Tasks
 
 1. [task-16-websocket-server](../tasks/milestone-6-backend-rendering/task-16-websocket-server.md) — Cloud Run WebSocket server with auth and reconnect

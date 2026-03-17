@@ -22,6 +22,15 @@ This milestone introduces the first creative tools beyond cut editing. Text over
 - All effects are serialized into the EDL JSON and survive save/reload
 - Effects compose correctly (e.g., text on a color-adjusted clip with a transition)
 
+## Architectural Considerations
+
+**Plugin Extension Points**: When building the effect and transition systems, design with clean interfaces that future plugins can extend:
+- **Effect Registry**: Built-in effects (brightness, contrast, etc.) should register via the same interface third-party effects will use later
+- **Transition Registry**: Built-in transitions should be pluggable
+- **Effect Parameters**: Standard parameter schema (type, min, max, default) that UI and plugins can share
+
+See `agent/design/local.plugin-architecture.md` for extension point patterns. Implementation is P10, but the architecture is established now.
+
 ## Tasks
 
 1. [task-13-text-overlays](../tasks/milestone-5-client-side-effects/task-13-text-overlays.md) — Text overlay system with positioning and styling

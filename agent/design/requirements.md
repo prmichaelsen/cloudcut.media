@@ -88,10 +88,20 @@ Professional video editing is locked behind heavy native applications (Premiere,
 - **CDN**: Cloud CDN for proxy media delivery
 
 ### Browser APIs
-- **WebCodecs**: Hardware-accelerated encode/decode (Chromium; WASM FFmpeg fallback for Firefox/Safari)
+- **HTML5 Video Element**: Hardware-accelerated playback (universal support, baseline for MVP)
+- **Canvas API**: Waveform rendering, text overlays, lightweight effects
+- **WebCodecs**: Hardware-accelerated encode/decode (Chromium/Android Capacitor only; progressive enhancement)
+- **ffmpeg.wasm**: Client-side video operations fallback (iOS Safari/Capacitor, Firefox)
 - **OPFS** (Origin Private File System): Local caching of video chunks
 - **SharedArrayBuffer + Web Workers**: Multi-threaded WASM execution (requires cross-origin isolation headers)
-- **MediaStream API**: Preview playback
+
+**Target Platforms (Priority Order)**:
+1. iOS Safari (webkit)
+2. iOS Capacitor (webkit)
+3. Android Capacitor (chromium)
+4. Desktop Chrome
+5. Desktop Firefox
+6. Desktop Safari
 
 ### Dependencies
 - ffmpeg.wasm: Client-side video decoding/encoding
@@ -120,6 +130,9 @@ WebSocket over gRPC-Web or SSE because:
 - Bidirectional (client sends commands, server pushes progress/status)
 - Cloud Run now supports WebSocket natively
 - Simpler than WebRTC for non-media-streaming use cases
+
+### 6. Plugin Architecture from Day 1
+Core code is designed with well-defined extension points (effect registry, export pipeline, timeline tools, etc.) following the VSCode extension model. This enables future third-party plugins without costly refactoring, even though the plugin loader itself is deferred to P10. See `agent/design/local.plugin-architecture.md` for details.
 
 ---
 
@@ -181,8 +194,8 @@ WebSocket over gRPC-Web or SSE because:
 ## Out of Scope
 
 1. **Real-time collaboration**: Single-user editing for MVP
-2. **Mobile editing**: Desktop browser focus initially
-3. **Custom plugins/extensions**: No plugin system for MVP
+2. **Mobile editing**: Desktop browser focus initially (target: iOS Safari + Capacitor, Android Capacitor)
+3. **Plugin system implementation**: No plugin loader or marketplace for MVP (deferred to P10), but core code is designed with extension points from day 1 to support future third-party feature modules (effects, transitions, export formats, AI tools) — see `agent/design/local.plugin-architecture.md`
 4. **Streaming/live editing**: Pre-recorded content only
 5. **Self-hosted/on-premise**: GCP-only deployment
 

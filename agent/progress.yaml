@@ -190,7 +190,7 @@ milestones:
         actual_hours: null
 
 documentation:
-  design_documents: 1
+  design_documents: 2
   milestone_documents: 6
   pattern_documents: 0
   task_documents: 18
@@ -205,7 +205,12 @@ recent_work:
     items:
       - Created requirements document (agent/design/requirements.md)
       - Planned 6 milestones with 18 tasks covering full MVP
-      - Installed acp-tanstack-cloudflare package (patterns)
+      - Installed acp-tanstack-cloudflare package (48 patterns, 2 commands)
+      - Installed core-sdk package (31 patterns)
+      - Created plugin architecture design (agent/design/local.plugin-architecture.md)
+      - Updated requirements to clarify iOS Safari/Capacitor as primary targets
+      - Updated requirements to note HTML5 video as baseline (ffmpeg.wasm fallback for iOS)
+      - Added architectural considerations to M1, M5, M6 about extension points
 
 next_steps:
   - Start M1 Task 1 - TanStack Start project setup

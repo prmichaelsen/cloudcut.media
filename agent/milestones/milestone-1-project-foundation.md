@@ -21,6 +21,15 @@ This milestone covers the foundational plumbing that every subsequent feature de
 - `gcloud run deploy` succeeds for the stub service; the service can write a test object to GCS and read it back
 - Cross-origin isolation headers are set so `SharedArrayBuffer` is available in the browser
 
+## Architectural Considerations
+
+**Plugin Extension Points**: Establish clean architectural patterns from the start to support future extensibility:
+- **Service Layer Pattern**: Core functionality (media processing, storage, effects) should be organized as services with well-defined interfaces
+- **Registry Pattern**: Use registries for extensible components (effects, formats, tools) where built-in implementations register the same way future plugins will
+- **Dependency Injection**: Consider a lightweight DI container so plugins can access core services without tight coupling
+
+See `agent/design/local.plugin-architecture.md` for details. While plugin loader implementation is P10, the core architecture is established in M1-M6.
+
 ## Tasks
 
 1. [task-1-tanstack-start-setup](../tasks/milestone-1-project-foundation/task-1-tanstack-start-setup.md)
