@@ -1,4 +1,172 @@
 packages:
+  core-sdk:
+    source: https://github.com/prmichaelsen/acp-core-sdk.git
+    package_version: 1.22.0
+    commit: 731b8335479bef927e5f40539538ba6d46fcf5c8
+    installed_at: 2026-03-17T18:29:43Z
+    updated_at: 2026-03-17T18:29:43Z
+    files:
+      patterns:
+        - name: core-sdk.types-shared.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:99b7fed7acbdcaf64bd077a608c7371b4707766d0843ae6e0dc766dd6460e290
+        - name: core-sdk.types-result.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:8f7c7da654446597060861fb24fcc3ceee2de5bb00459a906d368f19a089a895
+        - name: core-sdk.types-generic.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:489c36931b33a1f8a336abf58e0921382dba060ac629bcbb805ece4f3d0546f5
+        - name: core-sdk.types-error.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:31913371e55327dcef66a61b5ecfe95146bf60824ab30087d76cdfb26a827d14
+        - name: core-sdk.types-config.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:c3bec232be582c39afed8e01c8fa09fca42d1cc203e6639021ea6bfb2154c17e
+        - name: core-sdk.testing-unit.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:64e625db8657415319cbfb10096be38e75a14fbbe37c121db0eb2849de93be19
+        - name: core-sdk.testing-mocks.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:dd5aed995c5f286fb9786cd1715cd1304b202dfee8f8cc66fe9f23dd537103f6
+        - name: core-sdk.testing-integration.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:1005a5b53ff8d40ad2736ae45e0836081bb899dd12d8a490d09709b41c5ad39e
+        - name: core-sdk.testing-fixtures.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:de8e201afca3db124e47061a4ad797e5b068be37a524753713af09ee65502690
+        - name: core-sdk.testing-coverage.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:9ab09ba6bd8995c350c21a2f8e0aa4d4bc7660375232b4ad7120847e6e8b9515
+        - name: core-sdk.service-logging.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:33f3658b9df4b37a4eda901b2144136afb7bef0b5ea19837fc082eb87d79c71a
+        - name: core-sdk.service-interface.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:7eef8897acbe391faf0de61d20a8759a6f6f6317a0a28af3b6d5050ba4156e2b
+        - name: core-sdk.service-error-handling.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:6abfe6ee744aff20c919e922dbdfc016b637e39afca1ea42ae44ed3927a1f8a6
+        - name: core-sdk.service-container.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:675fed1c6333dac38155e2be61affc0aaa512e3325334a53e25d070ca1294573
+        - name: core-sdk.service-base.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:453404620d6631dff05acc28edad0bd4821063f6ab5f253d637844a8c2073529
+        - name: core-sdk.rest-client-sdk.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:c1c90c18da522b9152e0c70e53162912f6a5b568915d2ba678895dab4e8fc35a
+        - name: core-sdk.config-secrets.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:ff19dab3b5257f0380089a9190ec420a0cf1fb0910ba8efa544e44fe6a4f91a1
+        - name: core-sdk.config-schema.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:0f35d340f8f1b2f25b0ac03562e666f4ca844e45c3539706a98ac938b362bedf
+        - name: core-sdk.config-multi-env.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:15004525079aa7cb0489e105ece54d6bc1093bf0f89256ac282037bcd938ef40
+        - name: core-sdk.config-loading.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:71918c51c5e44a373d7ba508c0c6b9f668679b77332f065f83414724d8b9dc4c
+        - name: core-sdk.config-environment.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:b7fae8b4aa7f70c3cd8b4495fafdc13a3fd0ece0cd992cd760b01c13ca1442d3
+        - name: core-sdk.client-type-generation.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:d5b7d6af4a88aef0ba6af2c5587aba0fee917f42592350b45123ce246d092926
+        - name: core-sdk.client-svc.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:191bfdee9669d1d1d67840ff15a0d451508fa1abad50fd18f0854175787cfc48
+        - name: core-sdk.client-response.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:5a485b252dcb1813a37692db5b17d8979c71adde207be32e62b62d543574ce51
+        - name: core-sdk.client-http-transport.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:e2b3322c9734b6b28360dad90cecf67e3f06d691b50b3799128e8f17ca8301d6
+        - name: core-sdk.client-app.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:a818831881cadf82e8c5ac0a7ac126786ae70eca2e1fa3dbe23994abc47f273a
+        - name: core-sdk.adapter-rest.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:cfb55f4be7bfbb66c5e827131ff62d551eac0401514e16e66f8a43a7708c09f9
+        - name: core-sdk.adapter-mcp.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:42e70cccba26d1f8ddd1712f375ca3dfc45cf6f146b79caeb7b768435970e4cb
+        - name: core-sdk.adapter-client.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:895aae85bfeab5c03f703e03ca433072a05fa3f2f97027fd1257f46e4dfebe19
+        - name: core-sdk.adapter-cli.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:b3d94aaea86225be616f80bdcaabe3020c72a67d9605a2af698f4439634dd35b
+        - name: core-sdk.adapter-base.md
+          version: 0.0.0
+          installed_at: 2026-03-17T18:30:11Z
+          modified: false
+          checksum: sha256:5b9484105c36ac3fa11ca07d009500ab093279465c87634a2b447e09f0818f3f
+      commands:
+      designs:
+      scripts:
+      files:
+      indices:
   tanstack-cloudflare:
     source: https://github.com/prmichaelsen/acp-tanstack-cloudflare.git
     package_version: 2.0.0
@@ -367,7 +535,7 @@ packages:
           checksum: sha256:ce7940c4a5d9cb78935aac70af412656a78cd649b5ced9a27a2d126fcd6cc72a
           target: src/components/layout/UnifiedHeader.tsx
           variables:
-            name:: cloudcut.media
+            name: : cloudcut.media
         - name: src/components/layout/UnifiedFooter.tsx
           version: 0.0.0
           installed_at: 2026-03-17T17:37:19Z
@@ -399,7 +567,7 @@ packages:
           checksum: sha256:a06488c7095c5f22725902d858e8a05e5f5ccf8afb7515cd87d53e0d0d31e2b6
           target: src/components/wizard/WizardShell.tsx
           variables:
-            name:: cloudcut.media
+            name: : cloudcut.media
         - name: src/hooks/useWizardState.ts
           version: 0.0.0
           installed_at: 2026-03-17T17:37:19Z
@@ -419,7 +587,7 @@ packages:
           checksum: sha256:ae768ed422fd36ed56f9e52315b8062c185debc74e33df9a417dcd8ddeb7e2eb
           target: src/components/auth/AuthForm.tsx
           variables:
-            name:: cloudcut.media
+            name: : cloudcut.media
         - name: src/routes/api/auth/login.tsx
           version: 0.0.0
           installed_at: 2026-03-17T17:37:19Z
@@ -505,7 +673,7 @@ packages:
           checksum: sha256:0e11480394fdcb6542b6f3d2129ea8b52664992ee9ff05bf36502f266f2e33a6
           target: src/routes/api/consent/tos.tsx
           variables:
-            name:: cloudcut.media
+            name: : cloudcut.media
         - name: src/routes/settings.tsx
           version: 0.0.0
           installed_at: 2026-03-17T17:37:19Z
@@ -513,7 +681,7 @@ packages:
           checksum: sha256:d06b6bacd3d32cbef865f4799b94903c3c67d2af344aad5b39069f1762ecdc06
           target: src/routes/settings.tsx
           variables:
-            name:: cloudcut.media
+            name: : cloudcut.media
         - name: src/routes/router.tsx
           version: 0.0.0
           installed_at: 2026-03-17T17:37:19Z
@@ -579,4 +747,4 @@ packages:
         - name: design.template.md
         - name: requirements.template.md
 manifest_version: 1.0.0
-last_updated: 2026-03-17T17:37:13Z
+last_updated: 2026-03-17T18:29:43Z
