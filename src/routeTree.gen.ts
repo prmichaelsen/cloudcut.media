@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DemoTimelineRouteImport } from './routes/demo.timeline'
 
 const EditorRoute = EditorRouteImport.update({
   id: '/editor',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DemoTimelineRoute = DemoTimelineRouteImport.update({
+  id: '/demo/timeline',
+  path: '/demo/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/demo/timeline': typeof DemoTimelineRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/demo/timeline': typeof DemoTimelineRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/demo/timeline': typeof DemoTimelineRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/editor'
+  fullPaths: '/' | '/editor' | '/demo/timeline'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/editor'
-  id: '__root__' | '/' | '/editor'
+  to: '/' | '/editor' | '/demo/timeline'
+  id: '__root__' | '/' | '/editor' | '/demo/timeline'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EditorRoute: typeof EditorRoute
+  DemoTimelineRoute: typeof DemoTimelineRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,13 +75,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/demo/timeline': {
+      id: '/demo/timeline'
+      path: '/demo/timeline'
+      fullPath: '/demo/timeline'
+      preLoaderRoute: typeof DemoTimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EditorRoute: EditorRoute,
+  DemoTimelineRoute: DemoTimelineRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

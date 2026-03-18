@@ -207,41 +207,44 @@ export function TimelineEditor({
   const outPct = timeToPercent(outPoint)
 
   return (
-    <div className="relative select-none" style={{ touchAction: 'none' }}>
+    <div className="relative select-none py-3 pb-3" style={{ touchAction: 'none' }}>
       {/* Main clip bar */}
       <div
         ref={containerRef}
-        className="relative h-[88px] bg-gray-800 rounded-lg overflow-hidden cursor-crosshair border border-gray-700/50"
+        className="relative h-[88px] bg-gray-800 rounded-lg cursor-crosshair border border-gray-700/50"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        {/* Waveform canvas */}
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 pointer-events-none"
-        />
+        {/* Clipped layer for waveform and overlays (respects rounded corners) */}
+        <div className="absolute inset-0 rounded-lg overflow-hidden pointer-events-none">
+          {/* Waveform canvas */}
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0"
+          />
 
-        {/* Dimmed region: before in-point */}
-        <div
-          className="absolute inset-y-0 left-0 bg-black/50 pointer-events-none"
-          style={{ width: `${inPct}%` }}
-        />
+          {/* Dimmed region: before in-point */}
+          <div
+            className="absolute inset-y-0 left-0 bg-black/50"
+            style={{ width: `${inPct}%` }}
+          />
 
-        {/* Dimmed region: after out-point */}
-        <div
-          className="absolute inset-y-0 right-0 bg-black/50 pointer-events-none"
-          style={{ width: `${100 - outPct}%` }}
-        />
+          {/* Dimmed region: after out-point */}
+          <div
+            className="absolute inset-y-0 right-0 bg-black/50"
+            style={{ width: `${100 - outPct}%` }}
+          />
 
-        {/* Selected region highlight */}
-        <div
-          className="absolute inset-y-0 pointer-events-none border-y border-blue-400/20"
-          style={{
-            left: `${inPct}%`,
-            width: `${outPct - inPct}%`,
-          }}
-        />
+          {/* Selected region highlight */}
+          <div
+            className="absolute inset-y-0 border-y border-blue-400/20"
+            style={{
+              left: `${inPct}%`,
+              width: `${outPct - inPct}%`,
+            }}
+          />
+        </div>
 
         {/* In-point marker */}
         <div
@@ -293,15 +296,15 @@ export function TimelineEditor({
           {/* Vertical line */}
           <div
             className={`absolute top-0 bottom-0 w-[2px] -translate-x-1/2 transition-colors duration-75 ${
-              activeHandle === 'playhead' ? 'bg-white' : 'bg-white/90'
+              activeHandle === 'playhead' ? 'bg-teal-300' : 'bg-teal-400'
             }`}
           />
           {/* Diamond handle at top */}
           <div
             className={`absolute top-0 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-45 border-2 transition-all duration-75 ${
               activeHandle === 'playhead'
-                ? 'bg-white border-white scale-125 shadow-[0_0_8px_rgba(255,255,255,0.4)]'
-                : 'bg-white border-gray-300'
+                ? 'bg-teal-300 border-teal-200 scale-125 shadow-[0_0_8px_rgba(94,234,212,0.5)]'
+                : 'bg-teal-400 border-teal-300'
             }`}
           />
         </div>
