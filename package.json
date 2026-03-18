@@ -10,7 +10,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "start": "vite preview",
-    "deploy": "npm run build && npm run wrangler -- deploy",
+    "deploy": "npm run build && npm run wrangler -- pages deploy dist --project-name=cloudcut-media",
     "tail": "npm run wrangler -- tail",
     "typecheck": "tsc --noEmit",
     "cf-secrets": "npm run wrangler -- versions secret put || tsx scripts/upload-cloudflare-secrets.ts",
