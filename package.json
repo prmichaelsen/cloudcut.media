@@ -19,6 +19,10 @@
     "env": "export $(cat .env.cloudflare.local | xargs)"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1011.0",
+    "@aws-sdk/s3-request-presigner": "^3.1011.0",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
     "@prmichaelsen/firebase-admin-sdk-v8": "^2.8.0",
     "@prmichaelsen/pretty-toasts": "^3.0.6",
     "@tanstack/react-router": "^1.87.0",

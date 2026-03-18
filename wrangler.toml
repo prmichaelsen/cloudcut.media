@@ -1,11 +1,8 @@
 name = "cloudcut-media"
-main = ".output/server/index.mjs"
+pages_build_output_dir = "dist"
 compatibility_date = "2026-02-10"
 compatibility_flags = ["nodejs_compat"]
 
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-invocation_logs = true
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "cloudcut-media"
