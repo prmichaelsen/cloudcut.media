@@ -9,6 +9,9 @@ build/
 out/
 .next/
 .nuxt/
+.output/
+.vinxi/
+app.config.timestamp_*.js
 
 # Environment files
 .env

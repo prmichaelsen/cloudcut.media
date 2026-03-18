@@ -1,0 +1,52 @@
+{
+  "name": "cloudcut.media",
+  "version": "0.1.0",
+  "description": "WebAssembly-powered browser-based video editor with cloud rendering",
+  "type": "module",
+  "scripts": {
+    "routes:generate": "tsr generate",
+    "routes:watch": "tsr watch",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "start": "vite preview",
+    "deploy": "npm run build && npm run wrangler -- deploy",
+    "tail": "npm run wrangler -- tail",
+    "typecheck": "tsc --noEmit",
+    "cf-secrets": "npm run wrangler -- versions secret put || tsx scripts/upload-cloudflare-secrets.ts",
+    "cf-secrets:upload": "tsx scripts/upload-cloudflare-secrets.ts",
+    "wrangler": "export $(cat .env.cloudflare.local | xargs) && wrangler",
+    "env": "export $(cat .env.cloudflare.local | xargs)"
+  },
+  "dependencies": {
+    "@prmichaelsen/firebase-admin-sdk-v8": "^2.8.0",
+    "@prmichaelsen/pretty-toasts": "^3.0.6",
+    "@tanstack/react-router": "^1.87.0",
+    "@tanstack/router-devtools": "^1.87.0",
+    "@tanstack/start": "^1.120.20",
+    "fuse.js": "^7.1.0",
+    "lucide-react": "^0.577.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tanstack/router-generator": "^1.87.0",
+    "@tanstack/router-plugin": "^1.87.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.1",
+    "vite-tsconfig-paths": "^5.1.4",
+    "wrangler": "^3.93.0"
+  }
+}
