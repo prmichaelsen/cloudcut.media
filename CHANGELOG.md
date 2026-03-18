@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2026-03-18
+
+### Fixed
+- Firebase Admin SDK now receives Worker env bindings directly (fixes session cookie auth on Cloudflare Workers)
+- Video element uses `w-full h-full object-contain` instead of `max-w/max-h` (fixes invisible video)
+- Spacebar play/pause plays from current playhead position, not clip start
+- Logout button visible in pre-upload editor state
+
+### Added
+- Keyboard shortcut: Space to play/pause from playhead position (skips input fields)
+- Logout button in editor top bar (both pre-upload and post-upload states)
+- Debug logging for auth session verification and login endpoint
+
 ## [0.3.0] - 2026-03-18
 
 ### Added

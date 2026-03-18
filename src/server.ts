@@ -46,12 +46,19 @@ function jsonResponse(data: unknown, status: number, env: Env, request: Request)
 async function authenticate(request: Request, env: Env): Promise<VerifiedUser | Response> {
   // 1. Try session cookie (persistent sessions)
   try {
-    initFirebaseAdmin()
+    const cookieHeader = request.headers.get('cookie')
+    console.log('[auth] cookie header:', cookieHeader ? `present (${cookieHeader.length} chars)` : 'missing')
+    initFirebaseAdmin({
+        serviceAccount: env.FIREBASE_ADMIN_SERVICE_ACCOUNT_KEY,
+        projectId: env.FIREBASE_PROJECT_ID,
+      })
     const session = await getServerSession(request)
+    console.log('[auth] session result:', session ? `uid=${session.user.uid}` : 'null')
     if (session?.user) {
       return { uid: session.user.uid, email: session.user.email, name: session.user.displayName, picture: null, emailVerified: session.user.emailVerified ?? false }
     }
-  } catch {
+  } catch (err) {
+    console.error('[auth] session error:', err)
     // Fall through to token-based auth
   }
 
@@ -88,15 +95,22 @@ export default {
     // Create session cookie from Firebase ID token
     if (url.pathname === '/api/auth/login' && request.method === 'POST') {
       try {
-        initFirebaseAdmin()
+        console.log('[auth/login] Creating session...')
+        initFirebaseAdmin({
+        serviceAccount: env.FIREBASE_ADMIN_SERVICE_ACCOUNT_KEY,
+        projectId: env.FIREBASE_PROJECT_ID,
+      })
         const body = (await request.json()) as { idToken?: string }
         const { idToken } = body
 
         if (!idToken) {
+          console.log('[auth/login] Missing idToken in request body')
           return jsonResponse({ error: 'Missing idToken' }, 400, env, request)
         }
 
+        console.log('[auth/login] Got idToken, creating session cookie...')
         const sessionCookie = await createSessionCookie(idToken)
+        console.log('[auth/login] Session cookie created, length:', sessionCookie.length)
 
         const isLocalhost = url.hostname === 'localhost' || url.hostname === '127.0.0.1'
         const isIPAddress = /^\d+\.\d+\.\d+\.\d+$/.test(url.hostname)

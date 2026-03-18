@@ -6,9 +6,9 @@ const getVideoDuration = async (file: File): Promise<number> => {
   const { getVideoDuration: fn } = await import('../lib/ffmpeg')
   return fn(file)
 }
-import { Scissors } from 'lucide-react'
+import { Scissors, LogOut } from 'lucide-react'
 import { TimelineEditor, type Clip } from '../components/TimelineEditor'
-import { useAuth } from '../lib/auth'
+import { useAuth, signOut } from '../lib/auth'
 
 export const Route = createFileRoute('/editor')({
   component: Editor,
@@ -143,14 +143,28 @@ function Editor() {
     }
   }
 
-  const handlePlayPause = () => {
+  const handlePlayPause = useCallback(() => {
     if (!videoRef.current) return
     if (videoRef.current.paused) {
       videoRef.current.play()
     } else {
       videoRef.current.pause()
     }
-  }
+  }, [])
+
+  // Spacebar to play/pause from current playhead position
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && !e.repeat) {
+        // Don't trigger if user is typing in an input
+        if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') return
+        e.preventDefault()
+        handlePlayPause()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [handlePlayPause])
 
   const handleClipMove = (clipId: string, startTime: number, trackIndex: number) => {
     setClips((prev) => prev.map((c) => (c.id === clipId ? { ...c, startTime, trackIndex } : c)))
@@ -220,7 +234,12 @@ function Editor() {
             ← Home
           </Link>
           <span className="text-xs text-gray-500 tracking-wider uppercase">CloudCut</span>
-          <div className="w-12" />
+          <button
+            onClick={() => signOut().then(() => navigate({ to: '/login' }))}
+            className="flex items-center gap-1 text-xs text-gray-500 hover:text-white transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
         </div>
 
         <div className="flex-1 flex items-center justify-center p-6">
@@ -301,9 +320,13 @@ function Editor() {
         <Link to="/" className="text-xs text-gray-500 hover:text-white">
           ← Home
         </Link>
-        <span className="text-[10px] text-gray-600 truncate max-w-[120px]">
-          {user.email || user.displayName}
-        </span>
+        <button
+          onClick={() => signOut().then(() => navigate({ to: '/login' }))}
+          className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-white transition-colors"
+        >
+          <span className="truncate max-w-[100px]">{user.email || user.displayName}</span>
+          <LogOut className="w-3 h-3" />
+        </button>
       </div>
 
       {/* Full-screen video preview */}
@@ -312,7 +335,7 @@ function Editor() {
           <video
             ref={videoRef}
             src={videoKey ? `/api/media/${videoKey}` : undefined}
-            className="max-w-full max-h-full"
+            className="w-full h-full object-contain"
             playsInline
           />
 

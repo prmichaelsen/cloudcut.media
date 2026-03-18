@@ -2,9 +2,12 @@ import { initializeApp as _initializeApp } from '@prmichaelsen/firebase-admin-sd
 
 declare const process: { env: Record<string, string | undefined> }
 
-export function initFirebaseAdmin() {
+export function initFirebaseAdmin(config?: {
+  serviceAccount?: string
+  projectId?: string
+}) {
   _initializeApp({
-    serviceAccount: process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_KEY,
-    projectId: process.env.FIREBASE_PROJECT_ID,
+    serviceAccount: config?.serviceAccount ?? process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_KEY,
+    projectId: config?.projectId ?? process.env.FIREBASE_PROJECT_ID,
   })
 }
