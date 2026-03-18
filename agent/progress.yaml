@@ -6,7 +6,7 @@ project:
   description: |
     WebAssembly-powered browser-based video editor with cloud rendering
 
-current_milestone: 1
+current_milestone: 3
 
 milestones:
   - id: 1
@@ -72,19 +72,20 @@ milestones:
 
   - id: 3
     title: Timeline Editor
-    status: not_started
+    status: in_progress
     file: agent/milestones/milestone-3-timeline-editor.md
     estimated_weeks: 2
     tasks_total: 3
-    tasks_completed: 0
+    tasks_completed: 1
     tasks:
       - id: 7
         title: TimelineEditor Component
-        status: not_started
+        status: completed
         file: agent/tasks/milestone-3-timeline-editor/task-7-timeline-editor-component.md
         estimated_hours: 5
-        started: null
-        actual_hours: null
+        started: 2026-03-18T22:00:00Z
+        completed_date: 2026-03-18T22:15:00Z
+        actual_hours: 0.3
       - id: 8
         title: Waveform Renderer
         status: not_started

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-03-18
+
+### Added
+- TimelineEditor component with playhead diamond handle, in/out circle trim handles
+- Touch zone separation (top 30% for playhead, bottom 30% for trim handles)
+- Canvas-based waveform rendering with ResizeObserver
+- Selection overlay with dimmed regions outside trim range
+- Active handle visual feedback (scale, glow, color shift)
+
 ## [0.2.0] - 2026-03-18
 
 ### Changed
