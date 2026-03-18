@@ -1,8 +1,19 @@
 name = "cloudcut-media"
-pages_build_output_dir = "dist"
+main = "src/server.ts"
 compatibility_date = "2026-02-10"
 compatibility_flags = ["nodejs_compat"]
+
+routes = [
+  { pattern = "cloudcut.media/*", zone_name = "cloudcut.media" }
+]
 
 [[r2_buckets]]
 binding = "MEDIA_BUCKET"
 bucket_name = "cloudcut-media"
+
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+invocation_logs = true

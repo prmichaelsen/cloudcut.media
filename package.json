@@ -1,6 +1,6 @@
 {
   "name": "cloudcut.media",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "WebAssembly-powered browser-based video editor with cloud rendering",
   "type": "module",
   "scripts": {
@@ -21,12 +21,17 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1011.0",
     "@aws-sdk/s3-request-presigner": "^3.1011.0",
+    "@cloudflare/vite-plugin": "^1.29.1",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@prmichaelsen/firebase-admin-sdk-v8": "^2.8.0",
     "@prmichaelsen/pretty-toasts": "^3.0.6",
-    "@tanstack/react-router": "^1.87.0",
-    "@tanstack/router-devtools": "^1.87.0",
+    "@tailwindcss/vite": "^4.2.1",
+    "@tanstack/react-router": "^1.167.4",
+    "@tanstack/react-router-with-query": "^1.130.17",
+    "@tanstack/react-start": "^1.166.16",
+    "@tanstack/router-devtools": "^1.166.9",
+    "@tanstack/router-plugin": "^1.166.13",
     "@tanstack/start": "^1.120.20",
     "fuse.js": "^7.1.0",
     "lucide-react": "^0.577.0",
@@ -35,7 +40,6 @@
   },
   "devDependencies": {
     "@tanstack/router-generator": "^1.87.0",
-    "@tanstack/router-plugin": "^1.87.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
@@ -49,7 +53,7 @@
     "prettier": "^3.4.2",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.2",
-    "vite": "^6.0.1",
+    "vite": "^7.3.1",
     "vite-tsconfig-paths": "^5.1.4",
     "wrangler": "^3.93.0"
   }
