@@ -9,10 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DemoIndexRouteImport } from './routes/demo/index'
 import { Route as DemoTimelineRouteImport } from './routes/demo.timeline'
+import { Route as DemoViewThreePanelRouteImport } from './routes/demo/view/three-panel'
+import { Route as DemoViewTabbedWorkspaceRouteImport } from './routes/demo/view/tabbed-workspace'
+import { Route as DemoViewSplitViewRouteImport } from './routes/demo/view/split-view'
+import { Route as DemoViewScriptEditorRouteImport } from './routes/demo/view/script-editor'
+import { Route as DemoViewGridCanvasRouteImport } from './routes/demo/view/grid-canvas'
+import { Route as DemoViewFloatingDrawersRouteImport } from './routes/demo/view/floating-drawers'
+import { Route as DemoViewDualMonitorRouteImport } from './routes/demo/view/dual-monitor'
+import { Route as DemoViewCollapsibleRouteImport } from './routes/demo/view/collapsible'
+import { Route as DemoViewCanvasFirstRouteImport } from './routes/demo/view/canvas-first'
+import { Route as DemoViewAiCanvasRouteImport } from './routes/demo/view/ai-canvas'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EditorRoute = EditorRouteImport.update({
   id: '/editor',
   path: '/editor',
@@ -23,44 +40,200 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DemoIndexRoute = DemoIndexRouteImport.update({
+  id: '/demo/',
+  path: '/demo/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoTimelineRoute = DemoTimelineRouteImport.update({
   id: '/demo/timeline',
   path: '/demo/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewThreePanelRoute = DemoViewThreePanelRouteImport.update({
+  id: '/demo/view/three-panel',
+  path: '/demo/view/three-panel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewTabbedWorkspaceRoute = DemoViewTabbedWorkspaceRouteImport.update({
+  id: '/demo/view/tabbed-workspace',
+  path: '/demo/view/tabbed-workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewSplitViewRoute = DemoViewSplitViewRouteImport.update({
+  id: '/demo/view/split-view',
+  path: '/demo/view/split-view',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewScriptEditorRoute = DemoViewScriptEditorRouteImport.update({
+  id: '/demo/view/script-editor',
+  path: '/demo/view/script-editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewGridCanvasRoute = DemoViewGridCanvasRouteImport.update({
+  id: '/demo/view/grid-canvas',
+  path: '/demo/view/grid-canvas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewFloatingDrawersRoute = DemoViewFloatingDrawersRouteImport.update({
+  id: '/demo/view/floating-drawers',
+  path: '/demo/view/floating-drawers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewDualMonitorRoute = DemoViewDualMonitorRouteImport.update({
+  id: '/demo/view/dual-monitor',
+  path: '/demo/view/dual-monitor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewCollapsibleRoute = DemoViewCollapsibleRouteImport.update({
+  id: '/demo/view/collapsible',
+  path: '/demo/view/collapsible',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewCanvasFirstRoute = DemoViewCanvasFirstRouteImport.update({
+  id: '/demo/view/canvas-first',
+  path: '/demo/view/canvas-first',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoViewAiCanvasRoute = DemoViewAiCanvasRouteImport.update({
+  id: '/demo/view/ai-canvas',
+  path: '/demo/view/ai-canvas',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/login': typeof LoginRoute
   '/demo/timeline': typeof DemoTimelineRoute
+  '/demo/': typeof DemoIndexRoute
+  '/demo/view/ai-canvas': typeof DemoViewAiCanvasRoute
+  '/demo/view/canvas-first': typeof DemoViewCanvasFirstRoute
+  '/demo/view/collapsible': typeof DemoViewCollapsibleRoute
+  '/demo/view/dual-monitor': typeof DemoViewDualMonitorRoute
+  '/demo/view/floating-drawers': typeof DemoViewFloatingDrawersRoute
+  '/demo/view/grid-canvas': typeof DemoViewGridCanvasRoute
+  '/demo/view/script-editor': typeof DemoViewScriptEditorRoute
+  '/demo/view/split-view': typeof DemoViewSplitViewRoute
+  '/demo/view/tabbed-workspace': typeof DemoViewTabbedWorkspaceRoute
+  '/demo/view/three-panel': typeof DemoViewThreePanelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/login': typeof LoginRoute
   '/demo/timeline': typeof DemoTimelineRoute
+  '/demo': typeof DemoIndexRoute
+  '/demo/view/ai-canvas': typeof DemoViewAiCanvasRoute
+  '/demo/view/canvas-first': typeof DemoViewCanvasFirstRoute
+  '/demo/view/collapsible': typeof DemoViewCollapsibleRoute
+  '/demo/view/dual-monitor': typeof DemoViewDualMonitorRoute
+  '/demo/view/floating-drawers': typeof DemoViewFloatingDrawersRoute
+  '/demo/view/grid-canvas': typeof DemoViewGridCanvasRoute
+  '/demo/view/script-editor': typeof DemoViewScriptEditorRoute
+  '/demo/view/split-view': typeof DemoViewSplitViewRoute
+  '/demo/view/tabbed-workspace': typeof DemoViewTabbedWorkspaceRoute
+  '/demo/view/three-panel': typeof DemoViewThreePanelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/login': typeof LoginRoute
   '/demo/timeline': typeof DemoTimelineRoute
+  '/demo/': typeof DemoIndexRoute
+  '/demo/view/ai-canvas': typeof DemoViewAiCanvasRoute
+  '/demo/view/canvas-first': typeof DemoViewCanvasFirstRoute
+  '/demo/view/collapsible': typeof DemoViewCollapsibleRoute
+  '/demo/view/dual-monitor': typeof DemoViewDualMonitorRoute
+  '/demo/view/floating-drawers': typeof DemoViewFloatingDrawersRoute
+  '/demo/view/grid-canvas': typeof DemoViewGridCanvasRoute
+  '/demo/view/script-editor': typeof DemoViewScriptEditorRoute
+  '/demo/view/split-view': typeof DemoViewSplitViewRoute
+  '/demo/view/tabbed-workspace': typeof DemoViewTabbedWorkspaceRoute
+  '/demo/view/three-panel': typeof DemoViewThreePanelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/editor' | '/demo/timeline'
+  fullPaths:
+    | '/'
+    | '/editor'
+    | '/login'
+    | '/demo/timeline'
+    | '/demo/'
+    | '/demo/view/ai-canvas'
+    | '/demo/view/canvas-first'
+    | '/demo/view/collapsible'
+    | '/demo/view/dual-monitor'
+    | '/demo/view/floating-drawers'
+    | '/demo/view/grid-canvas'
+    | '/demo/view/script-editor'
+    | '/demo/view/split-view'
+    | '/demo/view/tabbed-workspace'
+    | '/demo/view/three-panel'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/editor' | '/demo/timeline'
-  id: '__root__' | '/' | '/editor' | '/demo/timeline'
+  to:
+    | '/'
+    | '/editor'
+    | '/login'
+    | '/demo/timeline'
+    | '/demo'
+    | '/demo/view/ai-canvas'
+    | '/demo/view/canvas-first'
+    | '/demo/view/collapsible'
+    | '/demo/view/dual-monitor'
+    | '/demo/view/floating-drawers'
+    | '/demo/view/grid-canvas'
+    | '/demo/view/script-editor'
+    | '/demo/view/split-view'
+    | '/demo/view/tabbed-workspace'
+    | '/demo/view/three-panel'
+  id:
+    | '__root__'
+    | '/'
+    | '/editor'
+    | '/login'
+    | '/demo/timeline'
+    | '/demo/'
+    | '/demo/view/ai-canvas'
+    | '/demo/view/canvas-first'
+    | '/demo/view/collapsible'
+    | '/demo/view/dual-monitor'
+    | '/demo/view/floating-drawers'
+    | '/demo/view/grid-canvas'
+    | '/demo/view/script-editor'
+    | '/demo/view/split-view'
+    | '/demo/view/tabbed-workspace'
+    | '/demo/view/three-panel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EditorRoute: typeof EditorRoute
+  LoginRoute: typeof LoginRoute
   DemoTimelineRoute: typeof DemoTimelineRoute
+  DemoIndexRoute: typeof DemoIndexRoute
+  DemoViewAiCanvasRoute: typeof DemoViewAiCanvasRoute
+  DemoViewCanvasFirstRoute: typeof DemoViewCanvasFirstRoute
+  DemoViewCollapsibleRoute: typeof DemoViewCollapsibleRoute
+  DemoViewDualMonitorRoute: typeof DemoViewDualMonitorRoute
+  DemoViewFloatingDrawersRoute: typeof DemoViewFloatingDrawersRoute
+  DemoViewGridCanvasRoute: typeof DemoViewGridCanvasRoute
+  DemoViewScriptEditorRoute: typeof DemoViewScriptEditorRoute
+  DemoViewSplitViewRoute: typeof DemoViewSplitViewRoute
+  DemoViewTabbedWorkspaceRoute: typeof DemoViewTabbedWorkspaceRoute
+  DemoViewThreePanelRoute: typeof DemoViewThreePanelRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/editor': {
       id: '/editor'
       path: '/editor'
@@ -75,11 +248,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/demo/': {
+      id: '/demo/'
+      path: '/demo'
+      fullPath: '/demo/'
+      preLoaderRoute: typeof DemoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo/timeline': {
       id: '/demo/timeline'
       path: '/demo/timeline'
       fullPath: '/demo/timeline'
       preLoaderRoute: typeof DemoTimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/three-panel': {
+      id: '/demo/view/three-panel'
+      path: '/demo/view/three-panel'
+      fullPath: '/demo/view/three-panel'
+      preLoaderRoute: typeof DemoViewThreePanelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/tabbed-workspace': {
+      id: '/demo/view/tabbed-workspace'
+      path: '/demo/view/tabbed-workspace'
+      fullPath: '/demo/view/tabbed-workspace'
+      preLoaderRoute: typeof DemoViewTabbedWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/split-view': {
+      id: '/demo/view/split-view'
+      path: '/demo/view/split-view'
+      fullPath: '/demo/view/split-view'
+      preLoaderRoute: typeof DemoViewSplitViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/script-editor': {
+      id: '/demo/view/script-editor'
+      path: '/demo/view/script-editor'
+      fullPath: '/demo/view/script-editor'
+      preLoaderRoute: typeof DemoViewScriptEditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/grid-canvas': {
+      id: '/demo/view/grid-canvas'
+      path: '/demo/view/grid-canvas'
+      fullPath: '/demo/view/grid-canvas'
+      preLoaderRoute: typeof DemoViewGridCanvasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/floating-drawers': {
+      id: '/demo/view/floating-drawers'
+      path: '/demo/view/floating-drawers'
+      fullPath: '/demo/view/floating-drawers'
+      preLoaderRoute: typeof DemoViewFloatingDrawersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/dual-monitor': {
+      id: '/demo/view/dual-monitor'
+      path: '/demo/view/dual-monitor'
+      fullPath: '/demo/view/dual-monitor'
+      preLoaderRoute: typeof DemoViewDualMonitorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/collapsible': {
+      id: '/demo/view/collapsible'
+      path: '/demo/view/collapsible'
+      fullPath: '/demo/view/collapsible'
+      preLoaderRoute: typeof DemoViewCollapsibleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/canvas-first': {
+      id: '/demo/view/canvas-first'
+      path: '/demo/view/canvas-first'
+      fullPath: '/demo/view/canvas-first'
+      preLoaderRoute: typeof DemoViewCanvasFirstRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/view/ai-canvas': {
+      id: '/demo/view/ai-canvas'
+      path: '/demo/view/ai-canvas'
+      fullPath: '/demo/view/ai-canvas'
+      preLoaderRoute: typeof DemoViewAiCanvasRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -88,7 +338,19 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EditorRoute: EditorRoute,
+  LoginRoute: LoginRoute,
   DemoTimelineRoute: DemoTimelineRoute,
+  DemoIndexRoute: DemoIndexRoute,
+  DemoViewAiCanvasRoute: DemoViewAiCanvasRoute,
+  DemoViewCanvasFirstRoute: DemoViewCanvasFirstRoute,
+  DemoViewCollapsibleRoute: DemoViewCollapsibleRoute,
+  DemoViewDualMonitorRoute: DemoViewDualMonitorRoute,
+  DemoViewFloatingDrawersRoute: DemoViewFloatingDrawersRoute,
+  DemoViewGridCanvasRoute: DemoViewGridCanvasRoute,
+  DemoViewScriptEditorRoute: DemoViewScriptEditorRoute,
+  DemoViewSplitViewRoute: DemoViewSplitViewRoute,
+  DemoViewTabbedWorkspaceRoute: DemoViewTabbedWorkspaceRoute,
+  DemoViewThreePanelRoute: DemoViewThreePanelRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,32 +1,34 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { TimelineEditor } from '~/components/TimelineEditor'
+import { TimelineEditor, type Clip } from '../components/TimelineEditor'
 
 export const Route = createFileRoute('/demo/timeline')({
   component: TimelineDemo,
 })
 
 function TimelineDemo() {
-  const duration = 60 // fake 60s clip
+  const videoDuration = 60
   const [currentTime, setCurrentTime] = useState(15)
-  const [inPoint, setInPoint] = useState(10)
-  const [outPoint, setOutPoint] = useState(45)
   const [playing, setPlaying] = useState(false)
   const rafRef = useRef<number>(0)
   const lastFrameRef = useRef<number>(0)
 
-  // Generate fake waveform data
-  const [waveformData] = useState(() => {
-    const samples: number[] = []
-    for (let i = 0; i < 200; i++) {
-      const base = 0.2 + Math.random() * 0.3
-      const speech = Math.sin(i * 0.15) * 0.3 + 0.5
-      const burst = i > 40 && i < 60 ? 0.3 : 0
-      const quiet = i > 130 && i < 160 ? -0.2 : 0
-      samples.push(Math.min(1, Math.max(0.05, base * speech + burst + quiet)))
-    }
-    return samples
-  })
+  const [clips, setClips] = useState<Clip[]>([
+    {
+      id: 'demo-clip-1',
+      trackIndex: 0,
+      startTime: 0,
+      duration: 60,
+      sourceOffset: 0,
+      color: '#3b82f6',
+    },
+  ])
+  const [selectedClipId, setSelectedClipId] = useState<string | null>(null)
+
+  const maxClipEnd = clips.reduce((max, c) => Math.max(max, c.startTime + c.duration), 0)
+  const totalDuration = Math.max(videoDuration, maxClipEnd) + 2
+  const maxTrack = clips.reduce((max, c) => Math.max(max, c.trackIndex), 0)
+  const trackCount = Math.max(3, maxTrack + 2)
 
   // Simulate playback
   const tick = useCallback(
@@ -37,7 +39,7 @@ function TimelineDemo() {
 
       setCurrentTime((prev) => {
         const next = prev + delta
-        if (next >= duration) {
+        if (next >= videoDuration) {
           setPlaying(false)
           return 0
         }
@@ -46,7 +48,7 @@ function TimelineDemo() {
 
       rafRef.current = requestAnimationFrame(tick)
     },
-    [duration],
+    [videoDuration],
   )
 
   useEffect(() => {
@@ -58,6 +60,42 @@ function TimelineDemo() {
     }
     return () => cancelAnimationFrame(rafRef.current)
   }, [playing, tick])
+
+  const handleClipMove = (clipId: string, startTime: number, trackIndex: number) => {
+    setClips((prev) => prev.map((c) => (c.id === clipId ? { ...c, startTime, trackIndex } : c)))
+  }
+
+  const handleClipResize = (
+    clipId: string,
+    startTime: number,
+    duration: number,
+    sourceOffset: number,
+  ) => {
+    setClips((prev) =>
+      prev.map((c) => (c.id === clipId ? { ...c, startTime, duration, sourceOffset } : c)),
+    )
+  }
+
+  const handleSplit = () => {
+    const target = clips.find(
+      (c) => currentTime > c.startTime && currentTime < c.startTime + c.duration,
+    )
+    if (!target) return
+
+    const splitAt = currentTime - target.startTime
+
+    setClips((prev) => [
+      ...prev.map((c) => (c.id === target.id ? { ...c, duration: splitAt } : c)),
+      {
+        id: crypto.randomUUID(),
+        trackIndex: target.trackIndex,
+        startTime: currentTime,
+        duration: target.duration - splitAt,
+        sourceOffset: target.sourceOffset + splitAt,
+        color: target.color,
+      },
+    ])
+  }
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -73,9 +111,7 @@ function TimelineDemo() {
           <Link to="/" className="text-blue-400 hover:text-blue-300 text-sm">
             ← Back
           </Link>
-          <h1 className="text-lg font-semibold tracking-tight">
-            Timeline Demo
-          </h1>
+          <h1 className="text-lg font-semibold tracking-tight">Timeline Demo</h1>
         </div>
       </header>
 
@@ -87,35 +123,32 @@ function TimelineDemo() {
               <p className="text-5xl font-mono tabular-nums tracking-tighter text-white/90">
                 {formatTime(currentTime)}
               </p>
-              <p className="text-sm text-gray-500">
-                {playing ? 'Playing' : 'Paused'}
-              </p>
+              <p className="text-sm text-gray-500">{playing ? 'Playing' : 'Paused'}</p>
             </div>
           </div>
 
           {/* Timeline */}
           <div className="space-y-3">
             <TimelineEditor
-              duration={duration}
+              clips={clips}
+              selectedClipId={selectedClipId}
               currentTime={currentTime}
-              inPoint={inPoint}
-              outPoint={outPoint}
+              totalDuration={totalDuration}
+              trackCount={trackCount}
+              onClipSelect={setSelectedClipId}
+              onClipMove={handleClipMove}
+              onClipResize={handleClipResize}
               onSeek={(t) => {
                 setCurrentTime(t)
                 setPlaying(false)
               }}
-              onInPointChange={setInPoint}
-              onOutPointChange={setOutPoint}
-              waveformData={waveformData}
             />
 
             {/* Info bar */}
             <div className="flex items-center justify-between text-xs text-gray-400 font-mono px-1">
-              <span>IN {formatTime(inPoint)}</span>
-              <span>
-                Selection: {formatTime(outPoint - inPoint)}
-              </span>
-              <span>OUT {formatTime(outPoint)}</span>
+              <span>{formatTime(currentTime)}</span>
+              <span>{clips.length} clips</span>
+              <span>{formatTime(totalDuration)}</span>
             </div>
           </div>
 
@@ -136,22 +169,17 @@ function TimelineDemo() {
             >
               {playing ? 'Pause' : 'Play'}
             </button>
-            <button
-              onClick={() => {
-                setInPoint(0)
-                setOutPoint(duration)
-              }}
-              className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-sm rounded transition-colors"
-            >
-              Clear Selection
-            </button>
           </div>
 
           {/* Instructions */}
           <div className="text-xs text-gray-500 space-y-1 text-center">
-            <p>Drag the <span className="text-white/70">diamond</span> at the top to scrub the playhead</p>
-            <p>Drag the <span className="text-blue-400/70">circles</span> at the bottom to set in/out trim points</p>
-            <p>Tap the middle of the bar to jump the playhead</p>
+            <p>Click a clip to select it, then drag edges to resize</p>
+            <p>Drag a clip body to move it between tracks</p>
+            <p>
+              Use the <span className="text-teal-400/70">scissors</span> button to split at
+              playhead
+            </p>
+            <p>Click empty space to seek</p>
           </div>
         </div>
       </main>

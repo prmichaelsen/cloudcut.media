@@ -11,6 +11,9 @@ out/
 .nuxt/
 .output/
 .vinxi/
+.nitro/
+.wrangler/
+app/
 app.config.timestamp_*.js
 
 # Environment files
@@ -51,3 +54,6 @@ coverage/
 .cache/
 .temp/
 .tmp/
+
+*.log
+*-service.json

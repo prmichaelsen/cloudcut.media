@@ -1,6 +1,6 @@
 {
   "name": "cloudcut.media",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "WebAssembly-powered browser-based video editor with cloud rendering",
   "type": "module",
   "scripts": {
@@ -13,8 +13,7 @@
     "deploy": "npm run build && npm run wrangler -- pages deploy dist --project-name=cloudcut-media",
     "tail": "npm run wrangler -- tail",
     "typecheck": "tsc --noEmit",
-    "cf-secrets": "npm run wrangler -- versions secret put || tsx scripts/upload-cloudflare-secrets.ts",
-    "cf-secrets:upload": "tsx scripts/upload-cloudflare-secrets.ts",
+    "cf-secrets": "tsx scripts/upload-cloudflare-secrets.ts",
     "wrangler": "export $(cat .env.cloudflare.local | xargs) && wrangler",
     "env": "export $(cat .env.cloudflare.local | xargs)"
   },
@@ -33,12 +32,15 @@
     "@tanstack/router-devtools": "^1.166.9",
     "@tanstack/router-plugin": "^1.166.13",
     "@tanstack/start": "^1.120.20",
+    "firebase": "^12.10.0",
     "fuse.js": "^7.1.0",
+    "jose": "^6.2.1",
     "lucide-react": "^0.577.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
     "@tanstack/router-generator": "^1.87.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

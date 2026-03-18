@@ -95,10 +95,10 @@ milestones:
         actual_hours: null
       - id: 9
         title: Editor Integration
-        status: not_started
+        status: in_progress
         file: agent/tasks/milestone-3-timeline-editor/task-9-editor-integration.md
         estimated_hours: 4
-        started: null
+        started: 2026-03-18T23:00:00Z
         actual_hours: null
 
   - id: 4
@@ -186,19 +186,20 @@ milestones:
 
   - id: 7
     title: Project Persistence & Auth
-    status: not_started
+    status: in_progress
     file: agent/milestones/milestone-7-project-persistence-auth.md
     estimated_weeks: 2
     tasks_total: 4
-    tasks_completed: 0
+    tasks_completed: 1
     tasks:
       - id: 19
         title: Authentication System
-        status: not_started
+        status: completed
         file: agent/tasks/milestone-7-project-persistence-auth/task-19-authentication-system.md
         estimated_hours: 5
-        started: null
-        actual_hours: null
+        started: 2026-03-18T00:35:00Z
+        completed_date: 2026-03-18T01:05:00Z
+        actual_hours: 0.5
       - id: 20
         title: Project Save/Load
         status: not_started
@@ -309,6 +310,15 @@ progress:
 recent_work:
   - date: 2026-03-18
     items:
+      - Completed Task 19 - Authentication System (pulled forward from M7)
+      - Firebase Auth integration (Google OAuth + email/password)
+      - Server-side JWT verification using jose (Cloudflare Workers compatible)
+      - Per-user R2 media isolation (videos/{userId}/...)
+      - CORS lockdown to production domains + localhost
+      - Auth-protected /api/* routes with Bearer token + query param fallback
+      - Login page with Google Sign-In and email/password forms
+      - AuthProvider context wrapping entire app
+      - /editor route protected with auth redirect
       - Completed Task 1 - TanStack Start Setup
       - Created package.json with Vite + TanStack Router + Tailwind CSS v4
       - Configured TypeScript (tsconfig.json) with strict mode

@@ -1,318 +1,382 @@
-import { useRef, useCallback, useEffect, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 
-interface TimelineEditorProps {
+export interface Clip {
+  id: string
+  trackIndex: number
+  startTime: number
   duration: number
-  currentTime: number
-  inPoint: number
-  outPoint: number
-  onSeek: (time: number) => void
-  onInPointChange: (time: number) => void
-  onOutPointChange: (time: number) => void
-  waveformData?: number[]
+  sourceOffset: number
+  color: string
 }
 
-type ActiveHandle = 'playhead' | 'in' | 'out' | null
+interface TimelineEditorProps {
+  clips: Clip[]
+  selectedClipId: string | null
+  currentTime: number
+  totalDuration: number
+  trackCount: number
+  onClipSelect: (clipId: string | null) => void
+  onClipMove: (clipId: string, startTime: number, trackIndex: number) => void
+  onClipResize: (clipId: string, startTime: number, duration: number, sourceOffset: number) => void
+  onSeek: (time: number) => void
+}
+
+const TRACK_H = 44
+const HANDLE_ZONE = 14
+const MIN_DUR = 0.05
+
+type Drag =
+  | { type: 'seek' }
+  | { type: 'move'; clipId: string; grabTime: number }
+  | { type: 'in'; clipId: string; origStart: number; origDur: number; origOff: number }
+  | { type: 'out'; clipId: string; origStart: number; origDur: number }
+  | null
 
 export function TimelineEditor({
-  duration,
+  clips,
+  selectedClipId,
   currentTime,
-  inPoint,
-  outPoint,
+  totalDuration,
+  trackCount,
+  onClipSelect,
+  onClipMove,
+  onClipResize,
   onSeek,
-  onInPointChange,
-  onOutPointChange,
-  waveformData,
 }: TimelineEditorProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [activeHandle, setActiveHandle] = useState<ActiveHandle>(null)
-  const activeHandleRef = useRef<ActiveHandle>(null)
+  const [drag, setDrag] = useState<Drag>(null)
+  const dragRef = useRef<Drag>(null)
+  const [pv, setPv] = useState<Record<string, Partial<Clip>>>({})
+  const pvRef = useRef(pv)
 
-  // Keep ref in sync for event handlers
-  activeHandleRef.current = activeHandle
+  dragRef.current = drag
+  pvRef.current = pv
 
-  const timeToPercent = (time: number) =>
-    duration > 0 ? (time / duration) * 100 : 0
+  const toPct = (t: number) => (totalDuration > 0 ? (t / totalDuration) * 100 : 0)
 
-  const clientXToTime = useCallback(
-    (clientX: number) => {
-      const rect = containerRef.current?.getBoundingClientRect()
-      if (!rect || duration <= 0) return 0
-      const x = clientX - rect.left
-      const ratio = Math.max(0, Math.min(1, x / rect.width))
-      return ratio * duration
+  const xToTime = useCallback(
+    (cx: number) => {
+      const r = containerRef.current?.getBoundingClientRect()
+      if (!r || totalDuration <= 0) return 0
+      return Math.max(0, Math.min(totalDuration, ((cx - r.left) / r.width) * totalDuration))
     },
-    [duration],
+    [totalDuration],
   )
 
-  // Waveform canvas rendering
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const container = containerRef.current
-    if (!canvas || !container) return
+  const yToTrack = useCallback(
+    (cy: number) => {
+      const r = containerRef.current?.getBoundingClientRect()
+      if (!r) return 0
+      return Math.max(0, Math.min(trackCount - 1, Math.floor((cy - r.top) / TRACK_H)))
+    },
+    [trackCount],
+  )
 
-    const dpr = window.devicePixelRatio || 1
-    const rect = container.getBoundingClientRect()
-    canvas.width = rect.width * dpr
-    canvas.height = rect.height * dpr
-    canvas.style.width = `${rect.width}px`
-    canvas.style.height = `${rect.height}px`
+  const clipDisplay = (clip: Clip): Clip => {
+    const p = pv[clip.id]
+    return p ? { ...clip, ...p } : clip
+  }
 
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+  // Get the selected clip's display state (with drag preview)
+  const selectedClip = selectedClipId ? clips.find((c) => c.id === selectedClipId) : null
+  const selectedDisplay = selectedClip ? clipDisplay(selectedClip) : null
 
-    ctx.scale(dpr, dpr)
-    ctx.clearRect(0, 0, rect.width, rect.height)
-
-    const samples = waveformData
-    if (!samples || samples.length === 0) {
-      // Placeholder: subtle noise pattern
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)'
-      for (let x = 0; x < rect.width; x += 3) {
-        const h = Math.random() * rect.height * 0.3 + rect.height * 0.1
-        const y = (rect.height - h) / 2
-        ctx.fillRect(x, y, 1.5, h)
-      }
-      return
-    }
-
-    const barWidth = rect.width / samples.length
-    const centerY = rect.height / 2
-
-    for (let i = 0; i < samples.length; i++) {
-      const amplitude = samples[i]
-      const barHeight = amplitude * rect.height * 0.8
-      const x = i * barWidth
-
-      // Gradient from center outward
-      const gradient = ctx.createLinearGradient(x, centerY - barHeight / 2, x, centerY + barHeight / 2)
-      gradient.addColorStop(0, 'rgba(148, 163, 184, 0.15)')
-      gradient.addColorStop(0.5, 'rgba(148, 163, 184, 0.35)')
-      gradient.addColorStop(1, 'rgba(148, 163, 184, 0.15)')
-
-      ctx.fillStyle = gradient
-      ctx.fillRect(x, centerY - barHeight / 2, Math.max(barWidth - 0.5, 1), barHeight)
-    }
-  }, [waveformData])
-
-  // Resize observer for canvas
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    const observer = new ResizeObserver(() => {
-      // Trigger re-render of waveform
-      const canvas = canvasRef.current
-      if (!canvas) return
-      const dpr = window.devicePixelRatio || 1
-      const rect = container.getBoundingClientRect()
-      canvas.width = rect.width * dpr
-      canvas.height = rect.height * dpr
-      canvas.style.width = `${rect.width}px`
-      canvas.style.height = `${rect.height}px`
-
-      const ctx = canvas.getContext('2d')
-      if (!ctx) return
-      ctx.scale(dpr, dpr)
-      ctx.clearRect(0, 0, rect.width, rect.height)
-
-      const samples = waveformData
-      if (!samples || samples.length === 0) return
-
-      const barWidth = rect.width / samples.length
-      const centerY = rect.height / 2
-
-      for (let i = 0; i < samples.length; i++) {
-        const amplitude = samples[i]
-        const barHeight = amplitude * rect.height * 0.8
-        const x = i * barWidth
-        const gradient = ctx.createLinearGradient(x, centerY - barHeight / 2, x, centerY + barHeight / 2)
-        gradient.addColorStop(0, 'rgba(148, 163, 184, 0.15)')
-        gradient.addColorStop(0.5, 'rgba(148, 163, 184, 0.35)')
-        gradient.addColorStop(1, 'rgba(148, 163, 184, 0.15)')
-        ctx.fillStyle = gradient
-        ctx.fillRect(x, centerY - barHeight / 2, Math.max(barWidth - 0.5, 1), barHeight)
-      }
-    })
-
-    observer.observe(container)
-    return () => observer.disconnect()
-  }, [waveformData])
-
-  // Pointer event handlers
-  const handlePointerDown = useCallback(
+  const onDown = useCallback(
     (e: React.PointerEvent) => {
-      const rect = containerRef.current?.getBoundingClientRect()
-      if (!rect || duration <= 0) return
+      const r = containerRef.current?.getBoundingClientRect()
+      if (!r || totalDuration <= 0) return
 
       e.preventDefault()
-      ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+      wrapperRef.current?.setPointerCapture(e.pointerId)
 
-      const relativeY = (e.clientY - rect.top) / rect.height
-      const time = clientXToTime(e.clientX)
+      const t = xToTime(e.clientX)
+      const tk = yToTrack(e.clientY)
+      const px = e.clientX - r.left
+      const relY = (e.clientY - r.top) / (trackCount * TRACK_H)
 
-      if (relativeY < 0.3) {
-        // Top zone: playhead
-        setActiveHandle('playhead')
-        onSeek(time)
-      } else if (relativeY > 0.7) {
-        // Bottom zone: nearest in/out handle
-        const distToIn = Math.abs(time - inPoint)
-        const distToOut = Math.abs(time - outPoint)
-        if (distToIn <= distToOut) {
-          setActiveHandle('in')
-          onInPointChange(Math.min(time, outPoint - 0.01))
-        } else {
-          setActiveHandle('out')
-          onOutPointChange(Math.max(time, inPoint + 0.01))
+      // Above tracks (playhead grab area) — always seek
+      if (e.clientY < r.top) {
+        onSeek(t)
+        setDrag({ type: 'seek' })
+        return
+      }
+
+      // Bottom 30%: check in/out handle proximity (only when a clip is selected)
+      if (relY > 0.7 && selectedClipId) {
+        const sel = clips.find((c) => c.id === selectedClipId)
+        if (sel) {
+          const inX = (sel.startTime / totalDuration) * r.width
+          const outX = ((sel.startTime + sel.duration) / totalDuration) * r.width
+
+          const distIn = Math.abs(px - inX)
+          const distOut = Math.abs(px - outX)
+
+          if (distIn < HANDLE_ZONE || distOut < HANDLE_ZONE) {
+            if (distIn <= distOut) {
+              setDrag({
+                type: 'in',
+                clipId: sel.id,
+                origStart: sel.startTime,
+                origDur: sel.duration,
+                origOff: sel.sourceOffset,
+              })
+            } else {
+              setDrag({
+                type: 'out',
+                clipId: sel.id,
+                origStart: sel.startTime,
+                origDur: sel.duration,
+              })
+            }
+            return
+          }
         }
-      } else {
-        // Middle zone: tap-to-seek
-        setActiveHandle('playhead')
-        onSeek(time)
       }
+
+      // Check clip body hit (reverse for z-order)
+      const hit = [...clips]
+        .reverse()
+        .find((c) => c.trackIndex === tk && t >= c.startTime && t <= c.startTime + c.duration)
+
+      if (hit) {
+        onClipSelect(hit.id)
+        setDrag({ type: 'move', clipId: hit.id, grabTime: t - hit.startTime })
+        return
+      }
+
+      // Empty space — seek + deselect
+      onClipSelect(null)
+      onSeek(t)
+      setDrag({ type: 'seek' })
     },
-    [duration, clientXToTime, inPoint, outPoint, onSeek, onInPointChange, onOutPointChange],
+    [clips, selectedClipId, totalDuration, trackCount, xToTime, yToTrack, onClipSelect, onSeek],
   )
 
-  const handlePointerMove = useCallback(
+  const onMove = useCallback(
     (e: React.PointerEvent) => {
-      const handle = activeHandleRef.current
-      if (!handle) return
-
+      const d = dragRef.current
+      if (!d) return
       e.preventDefault()
-      const time = clientXToTime(e.clientX)
 
-      switch (handle) {
-        case 'playhead':
-          onSeek(Math.max(0, Math.min(duration, time)))
-          break
-        case 'in':
-          onInPointChange(Math.max(0, Math.min(time, outPoint - 0.01)))
-          break
-        case 'out':
-          onOutPointChange(Math.max(inPoint + 0.01, Math.min(time, duration)))
-          break
+      const t = xToTime(e.clientX)
+      const tk = yToTrack(e.clientY)
+
+      if (d.type === 'seek') {
+        onSeek(t)
+        return
+      }
+
+      if (d.type === 'move') {
+        const c = clips.find((x) => x.id === d.clipId)
+        if (!c) return
+        setPv({ [d.clipId]: { startTime: Math.max(0, t - d.grabTime), trackIndex: tk } })
+        return
+      }
+
+      if (d.type === 'in') {
+        const minS = d.origStart - d.origOff
+        const maxS = d.origStart + d.origDur - MIN_DUR
+        const ns = Math.max(minS, Math.min(maxS, t))
+        const delta = ns - d.origStart
+        setPv({
+          [d.clipId]: {
+            startTime: ns,
+            duration: d.origDur - delta,
+            sourceOffset: d.origOff + delta,
+          },
+        })
+        return
+      }
+
+      if (d.type === 'out') {
+        const nd = Math.max(MIN_DUR, t - d.origStart)
+        setPv({ [d.clipId]: { duration: nd } })
       }
     },
-    [clientXToTime, duration, inPoint, outPoint, onSeek, onInPointChange, onOutPointChange],
+    [clips, xToTime, yToTrack, onSeek],
   )
 
-  const handlePointerUp = useCallback(() => {
-    setActiveHandle(null)
-  }, [])
+  const onUp = useCallback(() => {
+    const d = dragRef.current
+    const currentPv = pvRef.current
 
-  const playheadPct = timeToPercent(currentTime)
-  const inPct = timeToPercent(inPoint)
-  const outPct = timeToPercent(outPoint)
+    if (d && d.type !== 'seek') {
+      const cid = 'clipId' in d ? d.clipId : null
+      if (cid && currentPv[cid]) {
+        const c = clips.find((x) => x.id === cid)
+        if (c) {
+          const p = currentPv[cid]
+          if (d.type === 'move') {
+            onClipMove(cid, p.startTime ?? c.startTime, p.trackIndex ?? c.trackIndex)
+          } else {
+            onClipResize(
+              cid,
+              p.startTime ?? c.startTime,
+              p.duration ?? c.duration,
+              p.sourceOffset ?? c.sourceOffset,
+            )
+          }
+        }
+      }
+    }
+
+    setDrag(null)
+    setPv({})
+  }, [clips, onClipMove, onClipResize])
+
+  const phPct = toPct(currentTime)
+  const inPct = selectedDisplay ? toPct(selectedDisplay.startTime) : 0
+  const outPct = selectedDisplay ? toPct(selectedDisplay.startTime + selectedDisplay.duration) : 0
 
   return (
-    <div className="relative select-none py-3 pb-3" style={{ touchAction: 'none' }}>
+    <div
+      ref={wrapperRef}
+      className="relative select-none pt-5 pb-3"
+      style={{ touchAction: 'none' }}
+      onPointerDown={onDown}
+      onPointerMove={onMove}
+      onPointerUp={onUp}
+      onPointerCancel={onUp}
+    >
+      {/* Playhead — rendered outside the clipped container so diamond isn't clipped */}
+      <div
+        className="absolute pointer-events-none z-20"
+        style={{
+          left: `${phPct}%`,
+          top: 0,
+          bottom: 0,
+        }}
+      >
+        {/* Vertical line — spans from diamond down through tracks */}
+        <div
+          className={`absolute top-3 bottom-0 w-[2px] -translate-x-1/2 transition-colors duration-75 ${
+            drag?.type === 'seek' ? 'bg-teal-300' : 'bg-teal-400'
+          }`}
+        />
+        {/* Diamond handle — sits above the tracks, easy to grab */}
+        <div
+          className={`absolute top-0 -translate-x-1/2 w-4 h-4 rotate-45 border-2 transition-all duration-75 ${
+            drag?.type === 'seek'
+              ? 'bg-teal-300 border-teal-200 scale-125 shadow-[0_0_8px_rgba(94,234,212,0.5)]'
+              : 'bg-teal-400 border-teal-300'
+          }`}
+        />
+      </div>
+
       {/* Main clip bar */}
       <div
         ref={containerRef}
-        className="relative h-[88px] bg-gray-800 rounded-lg cursor-crosshair border border-gray-700/50"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
+        className={`relative rounded-lg border border-gray-700/50 mt-2 ${
+          drag?.type === 'move'
+            ? 'cursor-grabbing'
+            : drag?.type === 'in' || drag?.type === 'out'
+              ? 'cursor-col-resize'
+              : 'cursor-crosshair'
+        }`}
+        style={{ height: trackCount * TRACK_H, background: '#0c0f16' }}
       >
-        {/* Clipped layer for waveform and overlays (respects rounded corners) */}
+        {/* Clipped layer for overlays (respects rounded corners) */}
         <div className="absolute inset-0 rounded-lg overflow-hidden pointer-events-none">
-          {/* Waveform canvas */}
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0"
-          />
+          {/* Track lane dividers */}
+          {Array.from({ length: trackCount }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute inset-x-0 border-b border-white/[0.04]"
+              style={{ top: i * TRACK_H, height: TRACK_H }}
+            />
+          ))}
 
-          {/* Dimmed region: before in-point */}
-          <div
-            className="absolute inset-y-0 left-0 bg-black/50"
-            style={{ width: `${inPct}%` }}
-          />
+          {/* Dimmed region: before in-point (only when clip selected) */}
+          {selectedDisplay && (
+            <div className="absolute inset-y-0 left-0 bg-black/40" style={{ width: `${inPct}%` }} />
+          )}
 
-          {/* Dimmed region: after out-point */}
-          <div
-            className="absolute inset-y-0 right-0 bg-black/50"
-            style={{ width: `${100 - outPct}%` }}
-          />
+          {/* Dimmed region: after out-point (only when clip selected) */}
+          {selectedDisplay && (
+            <div
+              className="absolute inset-y-0 right-0 bg-black/40"
+              style={{ width: `${100 - outPct}%` }}
+            />
+          )}
 
           {/* Selected region highlight */}
-          <div
-            className="absolute inset-y-0 border-y border-blue-400/20"
-            style={{
-              left: `${inPct}%`,
-              width: `${outPct - inPct}%`,
-            }}
-          />
+          {selectedDisplay && (
+            <div
+              className="absolute inset-y-0 border-y border-blue-400/20"
+              style={{ left: `${inPct}%`, width: `${outPct - inPct}%` }}
+            />
+          )}
         </div>
 
-        {/* In-point marker */}
-        <div
-          className="absolute inset-y-0 pointer-events-none"
-          style={{ left: `${inPct}%` }}
-        >
-          {/* Vertical line */}
-          <div
-            className={`absolute top-0 bottom-0 w-[2px] -translate-x-1/2 transition-colors duration-75 ${
-              activeHandle === 'in' ? 'bg-blue-300' : 'bg-blue-400/80'
-            }`}
-          />
-          {/* Circle handle at bottom */}
-          <div
-            className={`absolute bottom-0 -translate-x-1/2 translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-75 ${
-              activeHandle === 'in'
-                ? 'bg-blue-300 border-white scale-125 shadow-[0_0_8px_rgba(96,165,250,0.5)]'
-                : 'bg-blue-500 border-blue-200'
-            }`}
-          />
-        </div>
+        {/* Clips */}
+        {clips.map((clip) => {
+          const c = clipDisplay(clip)
+          const sel = clip.id === selectedClipId
+          const leftPct = toPct(c.startTime)
+          const widthPct = toPct(c.duration)
 
-        {/* Out-point marker */}
-        <div
-          className="absolute inset-y-0 pointer-events-none"
-          style={{ left: `${outPct}%` }}
-        >
-          {/* Vertical line */}
-          <div
-            className={`absolute top-0 bottom-0 w-[2px] -translate-x-1/2 transition-colors duration-75 ${
-              activeHandle === 'out' ? 'bg-blue-300' : 'bg-blue-400/80'
-            }`}
-          />
-          {/* Circle handle at bottom */}
-          <div
-            className={`absolute bottom-0 -translate-x-1/2 translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-75 ${
-              activeHandle === 'out'
-                ? 'bg-blue-300 border-white scale-125 shadow-[0_0_8px_rgba(96,165,250,0.5)]'
-                : 'bg-blue-500 border-blue-200'
-            }`}
-          />
-        </div>
+          return (
+            <div
+              key={clip.id}
+              className={`absolute rounded-[4px] transition-shadow ${
+                sel ? 'ring-[1.5px] ring-white/70 z-10' : 'z-[1]'
+              } ${!drag ? (sel ? 'cursor-grab' : 'cursor-pointer') : ''}`}
+              style={{
+                left: `${leftPct}%`,
+                width: `${Math.max(widthPct, 0.5)}%`,
+                top: c.trackIndex * TRACK_H + 4,
+                height: TRACK_H - 8,
+                background: `linear-gradient(135deg, ${clip.color}55, ${clip.color}30)`,
+                borderLeft: `3px solid ${clip.color}`,
+              }}
+            />
+          )
+        })}
 
-        {/* Playhead marker */}
-        <div
-          className="absolute inset-y-0 pointer-events-none"
-          style={{ left: `${playheadPct}%` }}
-        >
-          {/* Vertical line */}
-          <div
-            className={`absolute top-0 bottom-0 w-[2px] -translate-x-1/2 transition-colors duration-75 ${
-              activeHandle === 'playhead' ? 'bg-teal-300' : 'bg-teal-400'
-            }`}
-          />
-          {/* Diamond handle at top */}
-          <div
-            className={`absolute top-0 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-45 border-2 transition-all duration-75 ${
-              activeHandle === 'playhead'
-                ? 'bg-teal-300 border-teal-200 scale-125 shadow-[0_0_8px_rgba(94,234,212,0.5)]'
-                : 'bg-teal-400 border-teal-300'
-            }`}
-          />
-        </div>
+        {/* In-point marker — only when clip selected */}
+        {selectedDisplay && (
+          <div className="absolute inset-y-0 pointer-events-none z-[15]" style={{ left: `${inPct}%` }}>
+            {/* Vertical line */}
+            <div
+              className={`absolute top-0 bottom-0 w-[2px] -translate-x-1/2 transition-colors duration-75 ${
+                drag?.type === 'in' ? 'bg-blue-300' : 'bg-blue-400/80'
+              }`}
+            />
+            {/* Circle handle at bottom */}
+            <div
+              className={`absolute bottom-0 -translate-x-1/2 translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-75 ${
+                drag?.type === 'in'
+                  ? 'bg-blue-300 border-white scale-125 shadow-[0_0_8px_rgba(96,165,250,0.5)]'
+                  : 'bg-blue-500 border-blue-200'
+              }`}
+            />
+          </div>
+        )}
 
-        {/* Zone debug indicators (hidden, uncomment for debugging) */}
-        {/* <div className="absolute inset-x-0 top-0 h-[30%] border-b border-red-500/20 pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-[30%] border-t border-green-500/20 pointer-events-none" /> */}
+        {/* Out-point marker — only when clip selected */}
+        {selectedDisplay && (
+          <div className="absolute inset-y-0 pointer-events-none z-[15]" style={{ left: `${outPct}%` }}>
+            {/* Vertical line */}
+            <div
+              className={`absolute top-0 bottom-0 w-[2px] -translate-x-1/2 transition-colors duration-75 ${
+                drag?.type === 'out' ? 'bg-blue-300' : 'bg-blue-400/80'
+              }`}
+            />
+            {/* Circle handle at bottom */}
+            <div
+              className={`absolute bottom-0 -translate-x-1/2 translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-75 ${
+                drag?.type === 'out'
+                  ? 'bg-blue-300 border-white scale-125 shadow-[0_0_8px_rgba(96,165,250,0.5)]'
+                  : 'bg-blue-500 border-blue-200'
+              }`}
+            />
+          </div>
+        )}
+
+        {/* (Playhead rendered outside container — see above) */}
       </div>
+
     </div>
   )
 }
