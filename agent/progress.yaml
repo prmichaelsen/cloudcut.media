@@ -79,24 +79,24 @@ milestones:
     tasks_completed: 0
     tasks:
       - id: 7
-        title: EDL Data Model
+        title: TimelineEditor Component
         status: not_started
-        file: agent/tasks/milestone-3-timeline-editor/task-7-edl-data-model.md
-        estimated_hours: 3
+        file: agent/tasks/milestone-3-timeline-editor/task-7-timeline-editor-component.md
+        estimated_hours: 5
         started: null
         actual_hours: null
       - id: 8
-        title: Timeline UI
+        title: Waveform Renderer
         status: not_started
-        file: agent/tasks/milestone-3-timeline-editor/task-8-timeline-ui.md
-        estimated_hours: 6
+        file: agent/tasks/milestone-3-timeline-editor/task-8-waveform-renderer.md
+        estimated_hours: 3
         started: null
         actual_hours: null
       - id: 9
-        title: Clip Operations
+        title: Editor Integration
         status: not_started
-        file: agent/tasks/milestone-3-timeline-editor/task-9-clip-operations.md
-        estimated_hours: 5
+        file: agent/tasks/milestone-3-timeline-editor/task-9-editor-integration.md
+        estimated_hours: 4
         started: null
         actual_hours: null
 
@@ -105,7 +105,7 @@ milestones:
     status: not_started
     file: agent/milestones/milestone-4-video-preview-playback.md
     estimated_weeks: 2
-    tasks_total: 3
+    tasks_total: 2
     tasks_completed: 0
     tasks:
       - id: 10
@@ -120,13 +120,6 @@ milestones:
         status: not_started
         file: agent/tasks/milestone-4-video-preview-playback/task-11-preview-player.md
         estimated_hours: 5
-        started: null
-        actual_hours: null
-      - id: 12
-        title: Audio Waveforms
-        status: not_started
-        file: agent/tasks/milestone-4-video-preview-playback/task-12-audio-waveforms.md
-        estimated_hours: 4
         started: null
         actual_hours: null
 
@@ -357,9 +350,9 @@ recent_work:
       - Fixed template variables in src/ components
 
 next_steps:
-  - Start M1 Task 2 - WASM Integration
-  - Continue M1 implementation with remaining tasks
-  - Commit Task 1 completion
+  - Start M3 Task 7 - TimelineEditor Component
+  - M3 Task 8 - Waveform Renderer
+  - M3 Task 9 - Editor Integration (replace button-based trim)
 
 notes: []
 
