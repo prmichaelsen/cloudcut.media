@@ -20,6 +20,8 @@ function TimelineDemo() {
       startTime: 0,
       duration: 60,
       sourceOffset: 0,
+      sourceUrl: '',
+      volume: 1,
       color: '#3b82f6',
     },
   ])
@@ -92,6 +94,8 @@ function TimelineDemo() {
         startTime: currentTime,
         duration: target.duration - splitAt,
         sourceOffset: target.sourceOffset + splitAt,
+        sourceUrl: target.sourceUrl,
+        volume: target.volume,
         color: target.color,
       },
     ])

@@ -6,6 +6,8 @@ export interface Clip {
   startTime: number
   duration: number
   sourceOffset: number
+  sourceUrl: string
+  volume: number
   color: string
 }
 

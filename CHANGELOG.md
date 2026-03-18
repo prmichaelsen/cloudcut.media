@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-03-18
+
+### Added
+- Canvas 2D render engine (`src/lib/render-engine.ts`) for multi-layer timeline compositing
+- Per-clip hidden `<video>` decoders with independent seek positions
+- Web Audio API integration with per-clip `GainNode` for volume control
+- `sourceUrl` and `volume` fields on `Clip` interface
+- Black gap rendering when no clips at playhead position
+- Track-order compositing (higher track index = foreground)
+- Render engine design document (`agent/design/local.render-engine.md`)
+
+### Changed
+- Editor preview replaced `<video>` element with `<canvas>` driven by RenderEngine
+- All playback/seek logic moved from editor.tsx into render engine module
+- Clip changes (trim, move, split) now immediately re-render the preview canvas
+- Editor.tsx simplified — delegates all video rendering to RenderEngine interface
+
+### Removed
+- Direct `<video>` element in editor preview (replaced by canvas compositor)
+- All seek-based clip mapping logic from editor.tsx
+
 ## [0.3.1] - 2026-03-18
 
 ### Fixed

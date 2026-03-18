@@ -9,6 +9,7 @@ const getVideoDuration = async (file: File): Promise<number> => {
 import { Scissors, LogOut } from 'lucide-react'
 import { TimelineEditor, type Clip } from '../components/TimelineEditor'
 import { useAuth, signOut } from '../lib/auth'
+import { RenderEngine, type RenderClip } from '../lib/render-engine'
 
 export const Route = createFileRoute('/editor')({
   component: Editor,
@@ -22,13 +23,13 @@ function Editor() {
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const engineRef = useRef<RenderEngine | null>(null)
 
   // Playback state
   const [playing, setPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
-  const rafRef = useRef<number>(0)
 
   const [videoDuration, setVideoDuration] = useState(0)
 
@@ -52,9 +53,9 @@ function Editor() {
     }
   }, [file])
 
-  // Create initial clip when duration is known
+  // Create initial clip when duration and videoKey are known
   useEffect(() => {
-    if (videoDuration > 0 && clips.length === 0) {
+    if (videoDuration > 0 && videoKey && clips.length === 0) {
       setClips([
         {
           id: crypto.randomUUID(),
@@ -62,50 +63,56 @@ function Editor() {
           startTime: 0,
           duration: videoDuration,
           sourceOffset: 0,
+          sourceUrl: `/api/media/${videoKey}`,
+          volume: 1,
           color: '#3b82f6',
         },
       ])
     }
-  }, [videoDuration, clips.length])
+  }, [videoDuration, videoKey, clips.length])
 
-  // Sync playhead with video playback
-  const syncPlayhead = useCallback(() => {
-    if (videoRef.current) {
-      setCurrentTime(videoRef.current.currentTime)
-      if (!videoRef.current.paused) {
-        rafRef.current = requestAnimationFrame(syncPlayhead)
-      }
-    }
-  }, [])
-
+  // Initialize render engine when canvas is available
   useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-    const onPlay = () => {
-      setPlaying(true)
-      rafRef.current = requestAnimationFrame(syncPlayhead)
-    }
-    const onPause = () => {
-      setPlaying(false)
-      cancelAnimationFrame(rafRef.current)
-    }
-    const onEnded = () => {
-      setPlaying(false)
-      cancelAnimationFrame(rafRef.current)
-    }
+    const engine = new RenderEngine(canvas)
+    engineRef.current = engine
 
-    video.addEventListener('play', onPlay)
-    video.addEventListener('pause', onPause)
-    video.addEventListener('ended', onEnded)
+    engine.onTimeUpdate((time) => {
+      setCurrentTime(time)
+    })
+
+    engine.onPlayStateChange((isPlaying) => {
+      setPlaying(isPlaying)
+    })
 
     return () => {
-      video.removeEventListener('play', onPlay)
-      video.removeEventListener('pause', onPause)
-      video.removeEventListener('ended', onEnded)
-      cancelAnimationFrame(rafRef.current)
+      engine.destroy()
+      engineRef.current = null
     }
-  }, [videoKey, syncPlayhead])
+  }, [videoKey]) // recreate engine when video changes
+
+  // Sync clips to render engine
+  useEffect(() => {
+    const engine = engineRef.current
+    if (!engine) return
+
+    const renderClips: RenderClip[] = clips.map((c) => ({
+      id: c.id,
+      trackIndex: c.trackIndex,
+      startTime: c.startTime,
+      duration: c.duration,
+      sourceOffset: c.sourceOffset,
+      sourceUrl: c.sourceUrl,
+      volume: c.volume,
+    }))
+
+    engine.setClips(renderClips)
+
+    // Re-render current frame after clip changes (trim, move, etc.)
+    engine.seekTo(currentTime)
+  }, [clips]) // intentionally omit currentTime — only re-render on clip changes
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
@@ -133,30 +140,29 @@ function Editor() {
     }
   }
 
-  const handleSeek = (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time
-      setCurrentTime(time)
-      if (playing) {
-        videoRef.current.pause()
-      }
+  const handleSeek = useCallback((time: number) => {
+    setCurrentTime(time)
+    engineRef.current?.seekTo(time)
+    if (playing) {
+      engineRef.current?.stopPlayback()
     }
-  }
+  }, [playing])
 
   const handlePlayPause = useCallback(() => {
-    if (!videoRef.current) return
-    if (videoRef.current.paused) {
-      videoRef.current.play()
-    } else {
-      videoRef.current.pause()
-    }
-  }, [])
+    const engine = engineRef.current
+    if (!engine) return
 
-  // Spacebar to play/pause from current playhead position
+    if (engine.playing) {
+      engine.stopPlayback()
+    } else {
+      engine.startPlayback(currentTime)
+    }
+  }, [currentTime])
+
+  // Spacebar to play/pause
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space' && !e.repeat) {
-        // Don't trigger if user is typing in an input
         if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') return
         e.preventDefault()
         handlePlayPause()
@@ -197,6 +203,8 @@ function Editor() {
         startTime: currentTime,
         duration: target.duration - splitAt,
         sourceOffset: target.sourceOffset + splitAt,
+        sourceUrl: target.sourceUrl,
+        volume: target.volume,
         color: target.color,
       },
     ])
@@ -312,7 +320,7 @@ function Editor() {
     )
   }
 
-  // Editor state — video preview + multi-track timeline only
+  // Editor state — canvas preview + multi-track timeline
   return (
     <div className="h-screen bg-gray-950 text-white flex flex-col">
       {/* Minimal top bar */}
@@ -329,14 +337,12 @@ function Editor() {
         </button>
       </div>
 
-      {/* Full-screen video preview */}
+      {/* Canvas preview */}
       <div className="flex-1 min-h-0 relative px-3">
-        <div className="h-full bg-black rounded-lg overflow-hidden flex items-center justify-center relative">
-          <video
-            ref={videoRef}
-            src={videoKey ? `/api/media/${videoKey}` : undefined}
-            className="w-full h-full object-contain"
-            playsInline
+        <div className="h-full bg-black rounded-lg overflow-hidden relative">
+          <canvas
+            ref={canvasRef}
+            className="w-full h-full"
           />
 
           {/* Play/pause overlay */}
